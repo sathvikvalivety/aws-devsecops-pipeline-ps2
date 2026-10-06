@@ -1,0 +1,26 @@
+{
+  "name": "sathvik-iac-scan",
+  "description": "Shift-left static security analysis using Checkov, detect-secrets and Terraform validation",
+  "source": {
+    "type": "S3",
+    "location": "sathvik-pipeline-009160054307/source.zip",
+    "buildspec": "build/buildspec-iac-scan.yml"
+  },
+  "artifacts": {
+    "type": "S3",
+    "location": "sathvik-pipeline-009160054307",
+    "name": "build-output.zip",
+    "packaging": "ZIP"
+  },
+  "environment": {
+    "type": "LINUX_CONTAINER",
+    "image": "aws/codebuild/standard:7.0",
+    "computeType": "BUILD_GENERAL1_SMALL"
+  },
+  "serviceRole": "arn:aws:iam::009160054307:role/sathvik_codebuild_role",
+  "tags": [
+    { "key": "Project", "value": "DevSecOpsCybersecurityHackathon" },
+    { "key": "Owner", "value": "DevSecOps" },
+    { "key": "Prefix", "value": "sathvik" }
+  ]
+}

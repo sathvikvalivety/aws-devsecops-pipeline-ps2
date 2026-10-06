@@ -1,0 +1,17 @@
+version: 0.2
+
+env:
+  variables:
+    PROJECT_PREFIX: "sathvik"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install checkov detect-secrets
+
+  build:
+    commands:
+      - echo "[SECURITY GATE] Scanning deliberately insecure IaC..."
+      - checkov -d security-tests/phase1/insecure --compact --framework terraform

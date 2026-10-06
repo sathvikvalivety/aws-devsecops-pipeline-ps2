@@ -1,0 +1,28 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketVersioning",
+        "s3:PutObjectAcl",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::sathvik-pipeline-009160054307",
+        "arn:aws:s3:::sathvik-pipeline-009160054307/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

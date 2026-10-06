@@ -1,0 +1,7 @@
+[
+    {
+        "Detail":  "{\"description\":\"Workload demonstrated unauthorized port scanning and suspicious outbound packets.\",\"type\":\"UnauthorizedAccess:EC2/PortScan\",\"createdAt\":\"2026-10-06T08:42:27Z\",\"region\":\"us-east-1\",\"title\":\"Unusual Outbound Port Scanning Activity Detected\",\"resource\":{\"instanceDetails\":{\"instanceType\":\"t3.micro\",\"instanceId\":\"i-002cd1c4695a9efb2\"},\"resourceType\":\"Instance\"},\"severity\":8.5,\"accountId\":\"009160054307\",\"schemaVersion\":\"2.0\"}",
+        "Source":  "sathvik.security",
+        "DetailType":  "Security Incident Simulation"
+    }
+]

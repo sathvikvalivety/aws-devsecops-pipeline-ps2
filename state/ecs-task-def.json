@@ -1,0 +1,43 @@
+{
+  "family": "sathvik-payment-service",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::009160054307:role/sathvik_ecs_execution_role",
+  "containerDefinitions": [
+    {
+      "name": "payment-api",
+      "image": "009160054307.dkr.ecr.us-east-1.amazonaws.com/sathvik-payment-service:v1.0.0",
+      "essential": true,
+      "user": "10001",
+      "readonlyRootFilesystem": true,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "DB_SECRET_NAME",
+          "value": "sathvik_payment_db_credentials"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/sathvik-payment-service",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

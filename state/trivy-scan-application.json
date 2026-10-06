@@ -1,0 +1,73 @@
+{
+  "SchemaVersion": 2,
+  "Trivy": {
+    "Version": "0.75.0"
+  },
+  "ReportID": "01a11060-5587-7dcd-82ab-b00ce2126ed7",
+  "CreatedAt": "2026-10-06T14:11:51.2399045+05:30",
+  "ArtifactName": "application",
+  "ArtifactType": "filesystem",
+  "Results": [
+    {
+      "Target": "requirements.txt",
+      "Class": "lang-pkgs",
+      "Type": "pip",
+      "Packages": [
+        {
+          "Name": "boto3",
+          "Identifier": {
+            "PURL": "pkg:pypi/boto3@1.35.30",
+            "UID": "5cc31258a7759418"
+          },
+          "Version": "1.35.30",
+          "Locations": [
+            {
+              "StartLine": 2,
+              "EndLine": 2
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "pydantic",
+          "Identifier": {
+            "PURL": "pkg:pypi/pydantic@2.7.0",
+            "UID": "5ff1045475cbd34b"
+          },
+          "Version": "2.7.0",
+          "Locations": [
+            {
+              "StartLine": 4,
+              "EndLine": 4
+            }
+          ],
+          "AnalyzedBy": "pip"
+        },
+        {
+          "Name": "urllib3",
+          "Identifier": {
+            "PURL": "pkg:pypi/urllib3@2.8.0",
+            "UID": "8f60dc6cf8ea6ca8"
+          },
+          "Version": "2.8.0",
+          "Locations": [
+            {
+              "StartLine": 3,
+              "EndLine": 3
+            }
+          ],
+          "AnalyzedBy": "pip"
+        }
+      ]
+    },
+    {
+      "Target": "Dockerfile",
+      "Class": "config",
+      "Type": "dockerfile",
+      "MisconfSummary": {
+        "Successes": 20,
+        "Failures": 0
+      }
+    }
+  ]
+}

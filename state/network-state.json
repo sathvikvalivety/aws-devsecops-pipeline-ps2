@@ -1,0 +1,17 @@
+﻿{
+    "AppSecurityGroupId":  "sg-0401849589b4d299e",
+    "PrivateRouteTableId":  "rtb-04195209892418791",
+    "Subnets":  {
+                    "sathvik_public_subnet_1a":  "subnet-0f0d8474af60fb652",
+                    "sathvik_private_app_1b":  "subnet-05fc07e7192a370af",
+                    "sathvik_public_subnet_1b":  "subnet-0406c007bd5dfd28d",
+                    "sathvik_private_app_1a":  "subnet-01a095bcfb17bd976",
+                    "sathvik_firewall_inspection_1a":  "subnet-01f08e86ed0eb9b2e",
+                    "sathvik_private_db_1a":  "subnet-0c7f332b4907333b7"
+                },
+    "InternetGatewayId":  "igw-0a162baa61a5a0d3d",
+    "PublicRouteTableId":  "rtb-003481d1a82b63b30",
+    "VpcId":  "vpc-0eeb82d10ba282c2d",
+    "QuarantineSecurityGroupId":  "sg-0a0a38a865302e6bc",
+    "DbSecurityGroupId":  "sg-06d62de2fcf4dc8b5"
+}

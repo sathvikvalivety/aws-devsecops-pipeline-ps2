@@ -1,0 +1,16 @@
+# INSECURE CONTAINER SPECIFICATION
+# FOR DEVSECOPS SECURITY GATE TESTING ONLY
+FROM python:3.8-slim-buster
+
+WORKDIR /app
+
+# Insecure practice: Runs as default root user
+# USER root
+
+COPY requirements-vulnerable.txt .
+RUN pip install --no-cache-dir -r requirements-vulnerable.txt
+
+COPY . .
+
+# Insecure practice: No healthcheck, runs as root
+CMD ["python", "-c", "print('Vulnerable container started')"]

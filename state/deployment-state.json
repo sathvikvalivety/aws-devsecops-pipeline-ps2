@@ -1,0 +1,17 @@
+﻿{
+    "Account":  "913786626696",
+    "InitializedAt":  "2026-10-06T11:47:57Z",
+    "Region":  "us-east-1",
+    "Resources":  {
+
+                  },
+    "LastVerifiedAt":  null,
+    "Phases":  {
+                   "Phase2_ContainerSecurity":  "PENDING",
+                   "Phase4_RuntimeThreatRemediation":  "PENDING",
+                   "Phase3_NetworkAndSSM":  "PENDING",
+                   "Phase1_ShiftLeftIaC":  "PENDING",
+                   "Phase0_Discovery":  "COMPLETED"
+               },
+    "CurrentPhase":  "PHASE 0: Discovery"
+}

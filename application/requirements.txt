@@ -1,0 +1,4 @@
+# Remediated secure production dependencies
+boto3==1.35.30
+urllib3==2.8.0
+pydantic==2.7.0

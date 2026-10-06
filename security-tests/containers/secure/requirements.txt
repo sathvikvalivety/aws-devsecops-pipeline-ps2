@@ -1,0 +1,7 @@
+# Remediated secure dependencies with zero high/critical vulnerabilities
+boto3==1.35.30
+urllib3==2.8.0
+pydantic==2.7.0
+jinja2==3.1.5
+pyyaml==6.0.2
+requests==2.32.3

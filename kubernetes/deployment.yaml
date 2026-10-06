@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sathvik-payment-service
+  namespace: sathvik-workloads
+  labels:
+    app: sathvik-payment-service
+    tier: payment-gateway
+    environment: production
+    compliance: pci-dss
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sathvik-payment-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: sathvik-payment-service
+        tier: payment-gateway
+    spec:
+      serviceAccountName: sathvik-payment-sa
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: payment-api
+        image: 009160054307.dkr.ecr.us-east-1.amazonaws.com/sathvik-payment-service:v1.0.0@sha256:7b5d259e8751859c25f7789a508b9816560932de07fb2cb0d00f722a9f4c39f1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http-api
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+        env:
+        - name: AWS_REGION
+          value: "us-east-1"
+        - name: DB_SECRET_NAME
+          value: "sathvik_payment_db_credentials"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}

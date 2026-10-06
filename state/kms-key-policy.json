@@ -1,0 +1,35 @@
+{
+  "Version": "2012-10-17",
+  "Id": "sathvik-kms-key-policy",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::009160054307:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow S3 and Lambda Service Usage",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "s3.amazonaws.com",
+          "lambda.amazonaws.com",
+          "ssm.amazonaws.com",
+          "logs.us-east-1.amazonaws.com"
+        ]
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

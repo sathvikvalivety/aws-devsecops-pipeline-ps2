@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "2.2",
+  "description": "Automated Host Forensic Acquisition & Live Triage Document for sathvik-devsecops",
+  "parameters": {
+    "IncidentId": {
+      "type": "String",
+      "description": "Unique Incident Identifier",
+      "default": "inc-sathvik-auto"
+    },
+    "ForensicsBucket": {
+      "type": "String",
+      "description": "S3 Bucket for Encrypted Forensic Evidence",
+      "default": "sathvik-forensics-009160054307"
+    },
+    "KmsKeyId": {
+      "type": "String",
+      "description": "KMS Key for Artifact Encryption",
+      "default": "arn:aws:kms:us-east-1:009160054307:key/7905802c-d140-43d8-b64b-396b766b8e73"
+    }
+  },
+  "mainSteps": [
+    {
+      "action": "aws:runShellScript",
+      "name": "CollectLiveForensicArtifacts",
+      "inputs": {
+        "runCommand": [
+          "#!/bin/bash",
+          "set -e",
+          "TIMESTAMP=$(date -u +%Y%m%dT%H%M%SZ)",
+          "EVIDENCE_DIR=\"/tmp/forensics-{{ IncidentId }}\"",
+          "mkdir -p \"${EVIDENCE_DIR}\"",
+          "echo \"[+] Beginning volatile memory and network triage at ${TIMESTAMP}...\"",
+          "ps auxww > \"${EVIDENCE_DIR}/process_tree.txt\" 2>&1 || true",
+          "ss -tupna > \"${EVIDENCE_DIR}/active_sockets.txt\" 2>&1 || true",
+          "netstat -tulnp > \"${EVIDENCE_DIR}/listening_ports.txt\" 2>&1 || true",
+          "lsof -Pni > \"${EVIDENCE_DIR}/open_network_files.txt\" 2>&1 || true",
+          "who -a > \"${EVIDENCE_DIR}/active_users.txt\" 2>&1 || true",
+          "last -F > \"${EVIDENCE_DIR}/login_history.txt\" 2>&1 || true",
+          "crontab -l > \"${EVIDENCE_DIR}/crontabs.txt\" 2>&1 || true",
+          "iptables -L -n -v > \"${EVIDENCE_DIR}/firewall_rules.txt\" 2>&1 || true",
+          "dmesg > \"${EVIDENCE_DIR}/kernel_dmesg.txt\" 2>&1 || true",
+          "find /tmp -type f -exec sha256sum {} + > \"${EVIDENCE_DIR}/tmp_file_hashes.txt\" 2>&1 || true",
+          "cd /tmp",
+          "tar -czvf \"forensics-{{ IncidentId }}.tar.gz\" -C \"${EVIDENCE_DIR}\" .",
+          "SHA256=$(sha256sum \"forensics-{{ IncidentId }}.tar.gz\" | awk '{print $1}')",
+          "echo \"[+] Forensic Bundle SHA256 Integrity: ${SHA256}\"",
+          "echo \"[+] Uploading encrypted forensic evidence bundle to S3...\"",
+          "aws s3 cp \"forensics-{{ IncidentId }}.tar.gz\" \"s3://{{ ForensicsBucket }}/forensic-bundles/{{ IncidentId }}/forensics.tar.gz\" --sse aws:kms --sse-kms-key-id \"{{ KmsKeyId }}\"",
+          "rm -rf \"${EVIDENCE_DIR}\" \"forensics-{{ IncidentId }}.tar.gz\"",
+          "echo \"[+] Forensic Acquisition Completed and Verified.\""
+        ]
+      }
+    }
+  ]
+}

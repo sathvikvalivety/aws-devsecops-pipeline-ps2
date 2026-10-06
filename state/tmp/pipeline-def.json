@@ -1,0 +1,70 @@
+{
+  "pipeline": {
+    "name": "sathvik-devsecops-pipeline",
+    "roleArn": "arn:aws:iam::009160054307:role/sathvik_codepipeline_role",
+    "artifactStore": {
+      "type": "S3",
+      "location": "sathvik-pipeline-009160054307"
+    },
+    "stages": [
+      {
+        "name": "Source",
+        "actions": [
+          {
+            "name": "S3Source",
+            "actionTypeId": {
+              "category": "Source",
+              "owner": "AWS",
+              "provider": "S3",
+              "version": "1"
+            },
+            "runOrder": 1,
+            "configuration": {
+              "S3Bucket": "sathvik-pipeline-009160054307",
+              "S3ObjectKey": "source.zip",
+              "PollForSourceChanges": "false"
+            },
+            "outputArtifacts": [
+              {
+                "name": "SourceArtifact"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ShiftLeftSecurityScan",
+        "actions": [
+          {
+            "name": "Checkov_Trivy_DetectSecrets_Scan",
+            "actionTypeId": {
+              "category": "Build",
+              "owner": "AWS",
+              "provider": "CodeBuild",
+              "version": "1"
+            },
+            "runOrder": 1,
+            "configuration": {
+              "ProjectName": "sathvik-iac-scan"
+            },
+            "inputArtifacts": [
+              {
+                "name": "SourceArtifact"
+              }
+            ],
+            "outputArtifacts": [
+              {
+                "name": "SecurityScanArtifact"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "tags": [
+    { "key": "Project", "value": "DevSecOpsCybersecurityHackathon" },
+    { "key": "Owner", "value": "DevSecOps" },
+    { "key": "Prefix", "value": "sathvik" }
+  ]
+}

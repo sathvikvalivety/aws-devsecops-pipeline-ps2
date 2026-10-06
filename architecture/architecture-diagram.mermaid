@@ -1,0 +1,52 @@
+flowchart TD
+    subgraph PHASE1["PHASE 1: SHIFT-LEFT IAC & SECRET MANAGEMENT"]
+        DEV["Developer Commit"] --> SCAN["Pre-Commit Hooks\ndetect-secrets"]
+        SCAN -->|Clean Code| PIPELINE["AWS CodePipeline\n(sathvik-devsecops-pipeline)"]
+        SCAN -->|Hardcoded Secret| REJECT_SEC["Pipeline Blocked\n(Hardcoded Secret Rejected)"]
+        PIPELINE --> CODEBUILD["AWS CodeBuild\n(sathvik-iac-scan)"]
+        CODEBUILD --> CHECKOV["Checkov Static Analysis\n(CIS AWS Benchmark)"]
+        CHECKOV -->|Insecure IaC| REJECT_IAC["Pipeline Blocked\n(12 High/Critical Violations)"]
+        CHECKOV -->|Remediated IaC| PASS_IAC["IaC Certified\n(0 Violations)"]
+        PASS_IAC --> SECRETS["AWS Secrets Manager\n(sathvik_payment_db_credentials)"]
+        SECRETS -.->|Auto 30-Day Rotation| ROT_LAMBDA["AWS Lambda\n(sathvik_secret_rotation)"]
+    end
+
+    subgraph PHASE2["PHASE 2: CONTAINER SECURITY & VULNERABILITY SCANNING"]
+        PASS_IAC --> DOCKER_BUILD["Multi-Stage Docker Build\n(Non-Root UID 10001)"]
+        DOCKER_BUILD --> VULN_GATE["Vulnerability Gate\n(Trivy & ECR Basic Scan)"]
+        VULN_GATE -->|High/Critical CVEs| REJECT_IMG["Deployment Blocked\n(CVE Policy Violation)"]
+        VULN_GATE -->|0 High / 0 Critical| PASS_IMG["Image Certified\n(PCI-DSS Compliant)"]
+        PASS_IMG --> ECR["Amazon ECR\n(sathvik-payment-service)"]
+        ECR --> DEPLOY["Workload Deployment\n(Amazon EKS / ECS Fargate)"]
+    end
+
+    subgraph PHASE3["PHASE 3: NETWORK SECURITY BOUNDARIES & SSM COMPLIANCE"]
+        VPC["Dedicated VPC 10.50.0.0/16\n(sathvik_vpc)"]
+        VPC --> PUB_SN["Public Subnets 10.50.1.0/24\n(ALB / IGW)"]
+        VPC --> APP_SN["Private App Subnets 10.50.10.0/24\n(ECS / EKS Workload)"]
+        VPC --> DB_SN["Private DB Subnet 10.50.30.0/24\n(Isolated RDS)"]
+        VPC --> FW_SN["Inspection Subnet 10.50.40.0/24\n(AWS Network Firewall)"]
+        
+        APP_SN --> APP_SG["sathvik_app_sg\n(Port 8000 VPC Only)"]
+        DB_SN --> DB_SG["sathvik_db_sg\n(Port 5432 from App Only)"]
+        
+        SSM_MGR["SSM Patch Manager"] --> BASELINE["sathvik_pci_patch_baseline\n(0-Day Auto-Approval for Critical CVEs)"]
+    end
+
+    subgraph PHASE4["PHASE 4: RUNTIME THREAT DETECTION & SOAR REMEDIATION"]
+        VPC --> FLOW_LOGS["VPC Flow Logs\n(fl-015a0f8e30012e5f8)"]
+        FLOW_LOGS --> CW_LOGS["CloudWatch Logs\n(/aws/vpc/sathvik_flow_logs)"]
+        
+        THREAT["Runtime Threat Event\n(C2 Activity / Port Scan)"] --> EVENTBRIDGE["Amazon EventBridge\n(sathvik_threat_detection_rule)"]
+        
+        EVENTBRIDGE --> SOAR["SOAR Lambda\n(sathvik_soar_remediation)"]
+        
+        SOAR -->|ENFORCE| QUARANTINE["Security Group Quarantine\n(sathvik_quarantine_sg - Zero Traffic)"]
+        SOAR -->|TAG| TAGS["Instance Tagged\n(IncidentStatus=QUARANTINED)"]
+        SOAR -->|COLLECT| SSM_RUN["SSM Run Command\n(sathvik-forensic-collection)"]
+        
+        SSM_RUN --> FORENSIC_S3["Encrypted S3 Evidence Bucket\n(sathvik-forensics-009160054307)"]
+        FORENSIC_S3 -.->|SSE-KMS Protection| KMS["Customer Managed Key\n(alias/sathvik_kms_key)"]
+        
+        SOAR -.->|VERIFY & RESTORE| ROLLBACK["Quarantine Rollback Engine\n(scripts/rollback-quarantine.ps1)"]
+    end

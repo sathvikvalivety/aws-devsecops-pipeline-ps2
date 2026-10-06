@@ -1,0 +1,36 @@
+# Terraform binaries and state
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+
+# Private keys, certificates and local env overrides
+*.pem
+*.key
+*.id_rsa
+.env
+.env.*
+*aws_credentials*
+*private_key*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Temporary test / scratch files
+state/test_doc.docx
+state/test_ocr.ps1
+state/ocr_inspect.ps1
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.bak

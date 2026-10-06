@@ -1,0 +1,9 @@
+{
+  "apiEndpoint": "https://gq4mp9mxwc.execute-api.us-east-1.amazonaws.com",
+  "region": "us-east-1",
+  "accountId": "009160054307",
+  "dashboardBucket": "sathvik-devsecops-dashboard-009160054307",
+  "s3WebsiteUrl": "http://sathvik-devsecops-dashboard-009160054307.s3-website-us-east-1.amazonaws.com",
+  "targetInstanceId": "i-002cd1c4695a9efb2",
+  "updatedAt": "2026-10-06T09:06:27.197219Z"
+}

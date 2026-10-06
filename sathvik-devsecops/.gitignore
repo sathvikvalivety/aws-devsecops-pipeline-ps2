@@ -1,0 +1,48 @@
+# .gitignore - sathvik-devsecops
+# STRICT ZERO-CREDENTIALS & TERRAFORM ARTIFACTS POLICY
+
+# Terraform runtime & state files
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform.lock.hcl
+crash.log
+
+# Secret & Credential files (NEVER COMMIT)
+*credentials*
+*secret*
+*.pem
+*.key
+*.id_rsa
+*.env
+*.p12
+*.crt
+*token*
+*.session
+
+# Python virtualenvs & byte code
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# OS, IDE and Editor artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.bak
+*.tmp
+
+# Test & coverage caches
+.pytest_cache/
+.coverage
+htmlcov/
